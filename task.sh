@@ -1,7 +1,6 @@
 !/bin/bash
 
-# Очистка от предыдущих запусков
-rm -rf dir1 dir2 dir3 list.txt hello.sh empty
+
 
 # Создание нужных директорий
 mkdir dir1
