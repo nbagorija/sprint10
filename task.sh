@@ -1,38 +1,52 @@
-!/bin/bash
+#!/bin/bash
 
+# создаём каталог task с вложенными директориями
+mkdir -p task/dir1 task/dir2 task/dir3/dir4
 
+# изменяем текущую директорию на task
+cd task
 
-# Создание нужных директорий
-mkdir dir1
-mkdir dir2
-mkdir -p dir3/dir4
+# создаём пустой файл task/dir2/empty
+touch dir2/empty
 
-# Создание пустого файла list.txt в текущей директории
-touch list.txt
+# создаём файл task/dir2/hello.sh с таким содержанием:
+echo '#!/bin/bash' > dir2/hello.sh
+echo 'echo "$1, привет!"' >> dir2/hello.sh
 
-# Копирование в другие директории
-cp list.txt dir2/
-cp dir2/list.txt dir3/dir4/
-cp dir2/list.txt dir1/summary.txt
+# устанавливаем для task/dir2/hello.sh права rwxrw-r--
+chmod 764 dir2/hello.sh
 
-# Создание hello.sh
-touch hello.sh
-chmod +x hello.sh
-echo 'echo Всем студентам, привет!' > hello.sh
+# сохраняем список файлов task/dir2 в task/dir2/list.txt
+ls dir2 > dir2/list.txt
 
-# Создание пустого файла empty
-touch empty
+# копируем содержимое каталога task/dir2 в каталог task/dir3/dir4
+cp dir2/* dir3/dir4
 
-# Вывести пути к list.txt в dir2 и dir3/dir4
-find . -type f -name "list.txt" | grep -E './dir2|./dir3/dir4'
+# записываем в task/dir1/summary.txt список файлов с расширением *.txt, включая поддиректории
+find . -name "*.txt" > dir1/summary.txt
 
-# Вывести список файлов (без директорий и без task.sh) в текущей директории
-ls -p | grep -v / | grep -v task.sh
+# дописываем в task/dir1/summary.txt содержимое task/dir2/list.txt
+cat dir2/list.txt >> dir1/summary.txt
 
-# Выполнить hello.sh
-./hello.sh
+# определяем переменную окружения NAME со значением "Всем студентам"
+export NAME="Всем студентам"
 
-# Вывести пути к summary.txt и двум list.txt
-echo ./dir1/summary.txt
-echo ./dir2/list.txt
-echo ./dir3/dir4/list.txt
+# запускаем task/dir2/hello.sh с переменной окружения NAME в качестве аргумента
+# вывод скрипта должен дописаться в файл task/dir1/summary.txt
+./dir2/hello.sh "$NAME" >> dir1/summary.txt
+
+# перемещаем с переименованием task/dir1/summary.txt в task/Практическое задание
+mv dir1/summary.txt "Практическое задание"
+
+# выводим на консоль содержимое файла task/Практическое задание
+cat "Практическое задание"
+
+# ищем в файле "Практическое задание" строки, которые содержат слово "dir"
+# и затем отсортировываем их
+grep "dir" "Практическое задание" | sort
+
+# меняем текущую директорию на родительскую для task
+cd ..
+
+# удаляем директорию task со всем содержимым
+rm -r task
